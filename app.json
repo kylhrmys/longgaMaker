@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "longgaMaker",
+    "slug": "longgaMaker",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
