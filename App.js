@@ -1,25 +1,28 @@
-// Import necessary components and libraries
+// Main component (e.g., App.js)
+
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-// Import your three pages
+import { createStackNavigator } from "@react-navigation/stack";
+import AppNavbar from "./components/AppNavbar";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
 import TextInputPage from "./pages/TextInputPage";
 
-// Create a stack navigator
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
-        {/* Define the three screens with their respective components */}
+      <Stack.Navigator
+        initialRouteName="Login"
+        screenOptions={{ headerShown: false }}
+      >
         <Stack.Screen name="Login" component={LoginPage} />
         <Stack.Screen name="Home" component={HomePage} />
         <Stack.Screen name="TextInput" component={TextInputPage} />
       </Stack.Navigator>
+
+      {/* Render the AppNavbar component and pass the navigation prop */}
     </NavigationContainer>
   );
 };

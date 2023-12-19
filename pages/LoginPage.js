@@ -72,7 +72,16 @@ const LoginPage = ({ navigation }) => {
       />
 
       {/* Login button */}
-      <Button title="Log In" onPress={handleLoginPress} />
+      <Button
+        title="Log In"
+        onPress={handleLoginPress}
+        color="purple"
+        style={{
+          borderRadius: 10,
+          paddingVertical: 10,
+          paddingHorizontal: 20,
+        }}
+      />
     </View>
   );
 };
@@ -87,15 +96,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     marginBottom: 16,
+    fontWeight: "bold",
+    color: "purple",
   },
   input: {
     height: 40,
     borderColor: "gray",
     borderWidth: 1,
     marginBottom: 12,
-    paddingLeft: 8,
+    paddingLeft: 10,
     paddingRight: 8,
-    width: "100%",
+    width: "80%",
+    borderRadius: 10,
+    marginBottom: 20,
   },
 });
 
