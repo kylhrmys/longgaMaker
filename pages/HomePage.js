@@ -3,25 +3,25 @@ import { View, Text, Image, Button, StyleSheet } from "react-native";
 import AppNavbar from "../components/AppNavbar";
 
 const HomePage = ({ navigation }) => {
-  const [flavors, setFlavors] = useState([]);
+  // const [flavors, setFlavors] = useState([]);
 
-  useEffect(() => {
-    // Fetch flavors when the component mounts
-    fetchFlavors();
-  }, []);
+  // useEffect(() => {
+  //   // Fetch flavors when the component mounts
+  //   fetchFlavors();
+  // }, []);
 
-  const fetchFlavors = async () => {
-    try {
-      // Perform the API GET request
-      const response = await fetch("your-api-endpoint/flavors");
-      const data = await response.json();
+  // const fetchFlavors = async () => {
+  //   try {
+  //     // Perform the API GET request
+  //     const response = await fetch("your-api-endpoint/flavors");
+  //     const data = await response.json();
 
-      // Update the flavors state with the fetched data
-      setFlavors(data);
-    } catch (error) {
-      console.error("Error fetching flavors:", error);
-    }
-  };
+  //     // Update the flavors state with the fetched data
+  //     setFlavors(data);
+  //   } catch (error) {
+  //     console.error("Error fetching flavors:", error);
+  //   }
+  // };
 
   // Function to navigate to the TextInput page
   const goToTextInputPage = () => {
@@ -51,7 +51,7 @@ const HomePage = ({ navigation }) => {
 
         {/* Buttons */}
         <View style={styles.buttonContainer}>
-          <Button title="Flavor" onPress={fetchFlavors} color="purple" />
+          <Button title="Flavor" color="purple" />
           <Button
             title="Custom Flavor"
             onPress={goToTextInputPage}
@@ -81,8 +81,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.5,
     shadowRadius: 2,
-    elevation: 3,
   },
+
   header: {
     fontSize: 20,
     fontWeight: "bold",
