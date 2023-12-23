@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginPage = ({ navigation }) => {
   // State to store the username and password
@@ -34,11 +35,22 @@ const LoginPage = ({ navigation }) => {
       });
 
       if (response.ok) {
-        // Successful login
         const responseData = await response.json();
-        alert("Successfully Logged In");
-        console.log("Login successful:", responseData);
-        navigation.navigate("Home");
+
+        // Log the entire response for inspection
+        console.log("API Response:", responseData);
+
+        // Check if the token is present in the response
+        if (responseData.access) {
+          // Save the token to AsyncStorage
+          await AsyncStorage.setItem("authToken", responseData.access);
+
+          alert("Successfully Logged In");
+          console.log("Login successful:", responseData);
+          navigation.navigate("Home");
+        } else {
+          console.error("Token not present in the response");
+        }
       } else {
         // Handle unsuccessful login (e.g., display an error message)
         const errorData = await response.json();

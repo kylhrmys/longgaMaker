@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, Button, StyleSheet } from "react-native";
 import AppNavbar from "../components/AppNavbar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomePage = ({ navigation }) => {
   const [flavors, setFlavors] = useState([]);
@@ -10,14 +11,31 @@ const HomePage = ({ navigation }) => {
     fetchFlavors();
   }, []);
 
+  const apiUrl = "https://api-longga-weznbalgna-as.a.run.app/flavors/";
+
   const fetchFlavors = async () => {
     try {
-      // Perform the API GET request
-      const response = await fetch("your-api-endpoint/flavors");
-      const data = await response.json();
+      // Retrieve the stored token from AsyncStorage
+      const authToken = await AsyncStorage.getItem("authToken");
 
-      // Update the flavors state with the fetched data
-      setFlavors(data);
+      // Perform the API GET request with the token in the headers
+      const response = await fetch(apiUrl, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        // Update the flavors state with the fetched data
+        setFlavors(data);
+      } else {
+        // Handle unsuccessful response
+        console.error("Error fetching flavors:", response.status);
+      }
     } catch (error) {
       console.error("Error fetching flavors:", error);
     }
@@ -27,6 +45,8 @@ const HomePage = ({ navigation }) => {
   const goToTextInputPage = () => {
     navigation.navigate("TextInput");
   };
+
+  console.log(flavors);
 
   return (
     <>
@@ -51,7 +71,10 @@ const HomePage = ({ navigation }) => {
 
         {/* Buttons */}
         <View style={styles.buttonContainer}>
-          <Button title="Flavor" onPress={fetchFlavors} color="purple" />
+          {flavors &&
+            flavors.map((flavor, index) => (
+              <Button key={index} title={flavor.title} color="purple" />
+            ))}
           <Button
             title="Custom Flavor"
             onPress={goToTextInputPage}
@@ -81,7 +104,6 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.5,
     shadowRadius: 2,
-    elevation: 3,
   },
   header: {
     fontSize: 20,
