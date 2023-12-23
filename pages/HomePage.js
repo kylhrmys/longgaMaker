@@ -1,23 +1,56 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, Button, StyleSheet } from "react-native";
 import AppNavbar from "../components/AppNavbar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const HomePage = ({ navigation }) => {
   const [flavors, setFlavors] = useState([]);
+  const [token, setToken] = useState(""); // Assuming you have a way to retrieve the token.
 
   useEffect(() => {
     // Fetch flavors when the component mounts
     fetchFlavors();
   }, []);
 
+  // Function to retrieve the authentication token (modify as needed)
+  const retrieveToken = async () => {
+    try {
+      const storedToken = await AsyncStorage.getItem("access");
+      if (storedToken) {
+        setToken(storedToken);
+      }
+    } catch (error) {
+      console.error("Error retrieving token:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Retrieve the authentication token when the component mounts
+    retrieveToken();
+  }, []);
+
   const fetchFlavors = async () => {
     try {
-      // Perform the API GET request
-      const response = await fetch("your-api-endpoint/flavors");
-      const data = await response.json();
+      // Perform the API GET request with the authentication token
+      const response = await fetch(
+        "https://api-longga-weznbalgna-as.a.run.app/flavors/",
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      // Update the flavors state with the fetched data
-      setFlavors(data);
+      if (response.ok) {
+        const data = await response.json();
+        setFlavors(data);
+      } else {
+        const errorData = await response.json();
+        console.error("Error fetching flavors:", errorData);
+      }
     } catch (error) {
       console.error("Error fetching flavors:", error);
     }
@@ -27,6 +60,8 @@ const HomePage = ({ navigation }) => {
   const goToTextInputPage = () => {
     navigation.navigate("TextInput");
   };
+
+  console.log(flavors);
 
   return (
     <>

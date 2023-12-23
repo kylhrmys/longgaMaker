@@ -1,22 +1,19 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LoginPage = ({ navigation }) => {
-  // State to store the username and password
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
 
-  // Function to handle username input changes
   const handleUsernameChange = (text) => {
     setUsername(text);
   };
 
-  // Function to handle password input changes
   const handlePasswordChange = (text) => {
     setPassword(text);
   };
 
-  // Function to handle login button press
   const handleLoginPress = async () => {
     const apiUrl = "https://api-longga-weznbalgna-as.a.run.app/auth/login/";
 
@@ -28,24 +25,25 @@ const LoginPage = ({ navigation }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: "admin",
-          password: "dummypassword",
+          username: username,
+          password: password,
         }),
       });
 
       if (response.ok) {
-        // Successful login
         const responseData = await response.json();
+
+        // Store cookies (access and user) in AsyncStorage
+        await AsyncStorage.setItem("access", responseData.access);
+        await AsyncStorage.setItem("user", responseData.user);
         alert("Successfully Logged In");
         console.log("Login successful:", responseData);
         navigation.navigate("Home");
       } else {
-        // Handle unsuccessful login (e.g., display an error message)
         const errorData = await response.json();
         console.error("Login error:", errorData);
       }
     } catch (error) {
-      // Handle network errors or other exceptions
       console.error("Login error:", error.message);
     }
   };
@@ -54,7 +52,6 @@ const LoginPage = ({ navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>Login Page</Text>
 
-      {/* Username input */}
       <TextInput
         style={styles.input}
         placeholder="Username"
@@ -62,16 +59,14 @@ const LoginPage = ({ navigation }) => {
         value={username}
       />
 
-      {/* Password input */}
       <TextInput
         style={styles.input}
         placeholder="Password"
         onChangeText={handlePasswordChange}
         value={password}
-        secureTextEntry // For password input
+        secureTextEntry
       />
 
-      {/* Login button */}
       <Button
         title="Log In"
         onPress={handleLoginPress}
