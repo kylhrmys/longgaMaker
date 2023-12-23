@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import CookieManager from "react-native-cookies";
 
 const LoginPage = ({ navigation }) => {
   // State to store the username and password
@@ -28,14 +29,43 @@ const LoginPage = ({ navigation }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: "admin",
-          password: "dummypassword",
+          username: username,
+          password: password,
         }),
       });
 
       if (response.ok) {
         // Successful login
         const responseData = await response.json();
+
+        // Extract relevant information from responseData
+        const { access, refresh, user } = responseData;
+
+        // Set cookies using react-native-cookies
+        await CookieManager.set({
+          name: "access_token",
+          value: access,
+          domain: "api-longga-weznbalgna-as.a.run.app", // Adjust the domain
+          origin: "api-longga-weznbalgna-as.a.run.app", // Adjust the origin
+          path: "/",
+        });
+
+        await CookieManager.set({
+          name: "refresh_token",
+          value: refresh,
+          domain: "api-longga-weznbalgna-as.a.run.app", // Adjust the domain
+          origin: "api-longga-weznbalgna-as.a.run.app", // Adjust the origin
+          path: "/",
+        });
+
+        await CookieManager.set({
+          name: "user",
+          value: JSON.stringify(user),
+          domain: "api-longga-weznbalgna-as.a.run.app", // Adjust the domain
+          origin: "api-longga-weznbalgna-as.a.run.app", // Adjust the origin
+          path: "/",
+        });
+
         alert("Successfully Logged In");
         console.log("Login successful:", responseData);
         navigation.navigate("Home");
