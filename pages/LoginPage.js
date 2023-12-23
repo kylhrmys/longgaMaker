@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import CookieManager from "@react-native-cookies/cookies";
 
 const LoginPage = ({ navigation }) => {
   // State to store the username and password
@@ -28,8 +29,8 @@ const LoginPage = ({ navigation }) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          username: "admin",
-          password: "dummypassword",
+          username: username,
+          password: password,
         }),
       });
 
@@ -38,6 +39,10 @@ const LoginPage = ({ navigation }) => {
         const responseData = await response.json();
         alert("Successfully Logged In");
         console.log("Login successful:", responseData);
+
+        // Store cookies here if needed
+        await CookieManager.setFromResponse(apiUrl, response);
+
         navigation.navigate("Home");
       } else {
         // Handle unsuccessful login (e.g., display an error message)
