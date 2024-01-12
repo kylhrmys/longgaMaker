@@ -1,10 +1,14 @@
 {
   "expo": {
-    "name": "longgaMaker",
+    "name": "N & Z Logganisa Maker",
+    "icon": "./assets/Logo.png",
     "slug": "longgaMaker",
     "version": "1.0.0",
-    "assetBundlePatterns": [
-      "**/*"
-    ]
+    "assetBundlePatterns": ["**/*"],
+    "extra": {
+      "eas": {
+        "projectId": "6007b560-00e3-49dc-8e6e-8a1f7398fd94"
+      }
+    }
   }
 }

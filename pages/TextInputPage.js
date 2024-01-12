@@ -6,180 +6,87 @@ import {
   Button,
   StyleSheet,
   ScrollView,
+  AppRegistry,
 } from "react-native";
 import AppNavbar from "../components/AppNavbar";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TextInputPage = ({ navigation }) => {
-  const [longganisaName, setLongganisaName] = useState("");
-  const [ingredient1, setIngredient1] = useState("");
-  const [ingredient2, setIngredient2] = useState("");
-  const [ingredient3, setIngredient3] = useState("");
-  const [ingredient4, setIngredient4] = useState("");
-  const [ingredient5, setIngredient5] = useState("");
+  const [flavorInputs, setFlavorInputs] = useState({
+    name: "",
+    ingredient1: 0,
+    ingredient2: 0,
+    ingredient3: 0,
+    ingredient4: 0,
+    ingredient5: 0,
+  });
 
-  const [amount1, setAmount1] = useState("");
-  const [amount2, setAmount2] = useState("");
-  const [amount3, setAmount3] = useState("");
-  const [amount4, setAmount4] = useState("");
-  const [amount5, setAmount5] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLongganisaNameChange = (text) => {
-    setLongganisaName(text);
+  const handleInputChange = (name, value) => {
+    setFlavorInputs((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleIngredient1Change = (text) => {
-    setIngredient1(text);
-  };
+  const apiUrl = "https://api-longga-weznbalgna-as.a.run.app/flavors/create";
 
-  const handleIngredient2Change = (text) => {
-    setIngredient2(text);
-  };
-
-  const handleIngredient3Change = (text) => {
-    setIngredient3(text);
-  };
-
-  const handleIngredient4Change = (text) => {
-    setIngredient4(text);
-  };
-
-  const handleIngredient5Change = (text) => {
-    setIngredient5(text);
-  };
-
-  const handleAmount1Change = (text) => {
-    // Remove non-numeric characters
-    const numericText = text.replace(/[^0-9]/g, "");
-
-    // Convert the remaining text to an integer
-    const intValue = numericText === "" ? "" : parseInt(numericText, 10);
-
-    // Update the state with the integer value
-    setAmount1(intValue);
-  };
-
-  const handleAmount2Change = (text) => {
-    // Remove non-numeric characters
-    const numericText = text.replace(/[^0-9]/g, "");
-
-    // Convert the remaining text to an integer
-    const intValue = numericText === "" ? "" : parseInt(numericText, 10);
-
-    // Update the state with the integer value
-    setAmount2(intValue);
-  };
-
-  const handleAmount3Change = (text) => {
-    // Remove non-numeric characters
-    const numericText = text.replace(/[^0-9]/g, "");
-
-    // Convert the remaining text to an integer
-    const intValue = numericText === "" ? "" : parseInt(numericText, 10);
-
-    // Update the state with the integer value
-    setAmount3(intValue);
-  };
-
-  const handleAmount4Change = (text) => {
-    // Remove non-numeric characters
-    const numericText = text.replace(/[^0-9]/g, "");
-
-    // Convert the remaining text to an integer
-    const intValue = numericText === "" ? "" : parseInt(numericText, 10);
-
-    // Update the state with the integer value
-    setAmount4(intValue);
-  };
-
-  const handleAmount5Change = (text) => {
-    // Remove non-numeric characters
-    const numericText = text.replace(/[^0-9]/g, "");
-
-    // Convert the remaining text to an integer
-    const intValue = numericText === "" ? "" : parseInt(numericText, 10);
-
-    // Update the state with the integer value
-    setAmount5(intValue);
-  };
-
-  const handleCreatePress = async () => {
+  const handleSubmit = async () => {
     try {
+      setLoading(true);
+      const authToken = await AsyncStorage.getItem("authToken");
+
       // Prepare the data to be sent in the request body
-      const formData = {
-        longganisaName,
-        ingredients: [
-          ingredient1,
-          ingredient2,
-          ingredient3,
-          ingredient4,
-          ingredient5,
-        ],
-        amounts: [amount1, amount2, amount3, amount4, amount5],
-      };
+      const formData = new FormData();
+      formData.append("title", flavorInputs.name);
+      formData.append("amount1", flavorInputs.ingredient1.toString());
+      formData.append("amount2", flavorInputs.ingredient2.toString());
+      formData.append("amount3", flavorInputs.ingredient3.toString());
+      formData.append("amount4", flavorInputs.ingredient4.toString());
+      formData.append("amount5", flavorInputs.ingredient5.toString());
 
       // Perform the API POST request
-      const response = await fetch("your-api-endpoint", {
+      const response = await fetch(apiUrl, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json",
-          // Add any additional headers if needed
+          Accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
         },
-        body: JSON.stringify(formData),
+        body: formData,
       });
 
       // Check the response status
       if (response.ok) {
         // Request was successful
-        alert("Longganisa created!");
+        alert("Flavor created!");
+        setFlavorInputs({
+          name: "",
+          ingredient1: 0,
+          ingredient2: 0,
+          ingredient3: 0,
+          ingredient4: 0,
+          ingredient5: 0,
+        });
       } else {
-        // Request failed
-        alert("Failed to create Longganisa. Please try again.");
+        console.log("error:", response);
+        alert("Failed to create Flavor. Please try again.");
       }
     } catch (error) {
       // Handle any errors that occurred during the API call
-      console.error("Error creating Longganisa:", error);
+      console.error("Error creating Flavor:", error);
       alert("An error occurred. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleTestPress = async () => {
-    try {
-      // Prepare the data to be sent in the request body
-      const formData = {
-        longganisaName,
-        ingredients: [
-          ingredient1,
-          ingredient2,
-          ingredient3,
-          ingredient4,
-          ingredient5,
-        ],
-        amounts: [amount1, amount2, amount3, amount4, amount5],
-      };
-
-      // Perform the API POST request
-      const response = await fetch("your-api-endpoint", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          // Add any additional headers if needed
-        },
-        body: JSON.stringify(formData),
-      });
-
-      // Check the response status
-      if (response.ok) {
-        // Request was successful
-        alert("Longganisa created!");
-      } else {
-        // Request failed
-        alert("Failed to create Longganisa. Please try again.");
-      }
-    } catch (error) {
-      // Handle any errors that occurred during the API call
-      console.error("Error creating Longganisa:", error);
-      alert("An error occurred. Please try again.");
-    }
+  const handleClear = () => {
+    setFlavorInputs({
+      name: "",
+      ingredient1: 0,
+      ingredient2: 0,
+      ingredient3: 0,
+      ingredient4: 0,
+      ingredient5: 0,
+    });
   };
 
   return (
@@ -194,87 +101,46 @@ const TextInputPage = ({ navigation }) => {
             preferences, and savor the satisfaction of enjoying a truly
             personalized culinary masterpiece.
           </Text>
-          {/* Longganisa Name input */}
+
+          {/* Flavor Name input */}
           <TextInput
             style={styles.input}
-            placeholder="Longganisa Name"
-            onChangeText={handleLongganisaNameChange}
-            value={longganisaName}
+            placeholder="Flavor Name"
+            onChangeText={(text) => handleInputChange("name", text)}
+            value={flavorInputs.name}
           />
 
-          {/* Ingredient inputs (up to 5) */}
-          <TextInput
-            style={styles.input}
-            placeholder="Ingredient 1"
-            onChangeText={handleIngredient1Change}
-            value={ingredient1}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Ammount of Ingredient 1 in grams"
-            keyboardType="numeric"
-            onChangeText={(text) => handleAmount1Change(parseInt(text, 10))}
-            value={amount1.toString()} // Convert the integer back to a string for the TextInput
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Ingredient 2"
-            onChangeText={handleIngredient2Change}
-            value={ingredient2}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Ammount of Ingredient 2 in grams"
-            keyboardType="numeric"
-            onChangeText={(text) => handleAmount2Change(parseInt(text, 10))}
-            value={amount2.toString()} // Convert the integer back to a string for the TextInput
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Ingredient 3"
-            onChangeText={handleIngredient3Change}
-            value={ingredient3}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Ammount of Ingredient 3 in grams"
-            keyboardType="numeric"
-            onChangeText={(text) => handleAmount3Change(parseInt(text, 10))}
-            value={amount3.toString()} // Convert the integer back to a string for the TextInput
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Ingredient 4"
-            onChangeText={handleIngredient4Change}
-            value={ingredient4}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Ammount of Ingredient 4 in grams"
-            keyboardType="numeric"
-            onChangeText={(text) => handleAmount4Change(parseInt(text, 10))}
-            value={amount4.toString()} // Convert the integer back to a string for the TextInput
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Ingredient 5"
-            onChangeText={handleIngredient5Change}
-            value={ingredient5}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Ammount of Ingredient 5 in grams"
-            keyboardType="numeric"
-            onChangeText={(text) => handleAmount5Change(parseInt(text, 10))}
-            value={amount5.toString()} // Convert the integer back to a string for the TextInput
-          />
+          {/* Amount inputs (up to 5) */}
+          {Array.from({ length: 5 }).map((_, index) => (
+            <React.Fragment key={index}>
+              <Text style={styles.label}>{`Ingredient ${
+                index + 1
+              } Amount:`}</Text>
+              <TextInput
+                style={styles.input}
+                placeholder={`Enter amount for Ingredient ${index + 1}`}
+                keyboardType="numeric"
+                onChangeText={(text) =>
+                  handleInputChange(
+                    `ingredient${index + 1}`,
+                    parseInt(text, 10)
+                  )
+                }
+                value={flavorInputs[`ingredient${index + 1}`].toString()}
+              />
+            </React.Fragment>
+          ))}
 
           {/* Buttons in a row */}
           <View style={styles.buttonContainer}>
-            <Button title="Create" onPress={handleCreatePress} color="purple" />
+            <Button title="Clear" onPress={handleClear} color="purple" />
             <View style={styles.buttonSpacer} />
-            <Button title="Test" onPress={handleTestPress} color="purple" />
+            <Button
+              title={loading ? "Loading..." : "Create"}
+              onPress={handleSubmit}
+              color="purple"
+              disabled={loading}
+            />
           </View>
         </View>
       </ScrollView>

@@ -19,12 +19,18 @@ const AppNavbar = ({ navigation }) => {
       >
         <Text style={styles.navButtonText}>Home</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.navButton}
+        onPress={() => navigation.navigate("TextInputPage")}
+      >
+        <Text style={styles.navButtonText}>Create</Text>
+      </TouchableOpacity>
 
       <TouchableOpacity
         style={styles.navButton}
-        onPress={() => navigation.navigate("TextInput")}
+        onPress={() => navigation.navigate("Production")}
       >
-        <Text style={styles.navButtonText}>Create</Text>
+        <Text style={styles.navButtonText}>Production</Text>
       </TouchableOpacity>
     </View>
   );
@@ -35,7 +41,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: "#3498db",
+    backgroundColor: "#1f2937",
     height: 50,
   },
   navButton: {
@@ -45,8 +51,7 @@ const styles = StyleSheet.create({
   },
   navButtonText: {
     color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    fontSize: 13,
   },
 });
 

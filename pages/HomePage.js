@@ -9,7 +9,7 @@ const HomePage = ({ navigation }) => {
   useEffect(() => {
     // Fetch flavors when the component mounts
     fetchFlavors();
-  }, []);
+  }, [flavors]);
 
   const apiUrl = "https://api-longga-weznbalgna-as.a.run.app/flavors/";
 
@@ -43,38 +43,7 @@ const HomePage = ({ navigation }) => {
     }
   };
 
-  const handleProcess = async (e) => {
-    e.preventDefault();
-    try {
-      const authToken = await AsyncStorage.getItem("authToken");
-      const response = await fetch(makeFood, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        // Do something with the fetched data, for example, update state
-        console.log(data);
-      } else {
-        // Handle the case where the response status is not OK
-        console.log("Response not okay:", response.status, response.statusText);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-      // Handle network errors or other exceptions
-    }
-  };
-
-  // Function to navigate to the TextInput page
-  const goToTextInputPage = () => {
-    navigation.navigate("TextInput");
-  };
-
-  console.log(flavors);
+  // console.log(flavors);
 
   return (
     <>
@@ -103,11 +72,11 @@ const HomePage = ({ navigation }) => {
             flavors.map((flavor, index) => (
               <Button key={index} title={flavor.title} color="purple" />
             ))}
-          <Button
+          {/* <Button
             title="Custom Flavor"
             onPress={goToTextInputPage}
             color="purple"
-          />
+          /> */}
         </View>
       </View>
     </>
